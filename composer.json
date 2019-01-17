@@ -1,0 +1,41 @@
+{
+	"name": "dmzx/walletindex",
+	"type": "phpbb-extension",
+	"description": "Adds Wallet index page to your forum.",
+	"homepage": "https://www.dmzx-web.net",
+	"version": "1.0.0",
+	"time": "2019-01-15",
+	"keywords": [
+		"phpbb",
+		"extension",
+		"walletindex"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "dmzx",
+			"homepage": "https://www.dmzx-web.net",
+			"email": "info@dmzx-web.net",
+			"role": "Extension Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3.3",
+		"composer/installers": "~1.0"
+	},
+	"require-dev": {
+		"phpbb/epv": "dev-master"
+	},
+	"extra": {
+		"display-name": "Wallet index",
+		"soft-require": {
+			"phpbb/phpbb": ">=3.2.0,<3.3"
+		},
+		"version-check": {
+			"host": "www.dmzx-web.net",
+			"directory": "/versions",
+			"filename": "walletindex_version.json",
+			"ssl": true
+		}
+	}
+}

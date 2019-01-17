@@ -1,0 +1,3 @@
+dmzx_wallet_controller:
+    path: /wallet
+    defaults: { _controller: dmzx.walletindex.wallet.controller:handle_wallet }

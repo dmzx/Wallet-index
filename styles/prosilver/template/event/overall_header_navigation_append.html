@@ -1,0 +1,8 @@
+{% if WALLETINDEX_ENABLE and walletindex and (WALLETINDEX_ENABLE_GUEST and S_USER_LOGGED_IN) or not WALLETINDEX_ENABLE_GUEST %}
+<li data-last-responsive="true">
+	<a href="{U_WALLET}" title="{{ lang('WALLETINDEX_TITLE') }}" role="menuitem">
+		<i class="icon fa fa-address-card" aria-hidden="true"></i>
+		<span>{{ lang('WALLETINDEX_TITLE') }}</span>
+	</a>
+</li>
+{% endif %}

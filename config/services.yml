@@ -1,0 +1,34 @@
+imports:
+    - { resource: tables.yml }
+services:
+    dmzx.walletindex.admin.controller:
+        class: dmzx\walletindex\controller\admin_controller
+        arguments:
+            - '@config'
+            - '@template'
+            - '@log'
+            - '@user'
+            - '@dbal.conn'
+            - '@request'
+            - '%tables.walletindex_table%'
+            - '@ext.manager'
+            - '@path_helper'
+    dmzx.walletindex.wallet.controller:
+        class: dmzx\walletindex\controller\wallet_controller
+        arguments:
+            - '@template'
+            - '@user'
+            - '@controller.helper'
+    dmzx.walletindex.listener:
+        class: dmzx\walletindex\event\listener
+        arguments:
+            - '@template'
+            - '@user'
+            - '@dbal.conn'
+            - '@config'
+            - '@controller.helper'
+            - '%tables.walletindex_table%'
+            - '@ext.manager'
+            - '@path_helper'
+        tags:
+            - { name: event.listener }

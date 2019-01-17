@@ -1,0 +1,92 @@
+{% INCLUDECSS 'acp_walletindex.css' %}
+{% INCLUDE 'overall_header.html' %}
+
+<h1>{{ lang('ACP_WALLETINDEX_TITLE') }}</h1>
+
+<p><img src="https://img.shields.io/badge/{{ lang('WALLETINDEX_VERSION') }}-{{ WALLETINDEX_VERSION }}-green.svg?style=plastic" /></p>
+
+<form id="acp_walletindex" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend><i class="icon fa-cog fa-lg" aria-hidden="true"></i> {{ lang('ACP_WALLETINDEX_CONFIG') }}</legend>
+		<dl>
+			<dt>
+				<label for="walletindex_enable">{{ lang('WALLETINDEX_ENABLE') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_ENABLE_EXPLAIN') }}</span></dt>
+			</dt>
+			<dd>
+				<label><input type="radio" class="radio" id="walletindex_enable" name="walletindex_enable" value="1" {% if WALLETINDEX_ENABLE %}checked="checked"{% endif %}/> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="walletindex_enable" value="0" {% if not WALLETINDEX_ENABLE %}checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="walletindex_enable_guest">{{ lang('WALLETINDEX_ENABLE_GUEST') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_ENABLE_GUEST_EXPLAIN') }}</span></dt>
+			</dt>
+			<dd>
+				<label><input type="radio" class="radio" id="walletindex_enable_guest" name="walletindex_enable_guest" value="1" {% if WALLETINDEX_ENABLE_GUEST %}checked="checked"{% endif %}/> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="walletindex_enable_guest" value="0" {% if not WALLETINDEX_ENABLE_GUEST %}checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="walletindex_enable_footer">{{ lang('WALLETINDEX_ENABLE_FOOTER') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_ENABLE_FOOTER_EXPLAIN') }}</span></dt>
+			</dt>
+			<dd>
+				<label><input type="radio" class="radio" id="walletindex_enable_footer" name="walletindex_enable_footer" value="1" {% if WALLETINDEX_ENABLE_FOOTER %}checked="checked"{% endif %}/> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="walletindex_enable_footer" value="0" {% if not WALLETINDEX_ENABLE_FOOTER %}checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="walletindex_footer_guest">{{ lang('WALLETINDEX_FOOTER_GUEST') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_FOOTER_GUEST_EXPLAIN') }}</span></dt>
+			</dt>
+			<dd>
+				<label><input type="radio" class="radio" id="walletindex_footer_guest" name="walletindex_footer_guest" value="1" {% if WALLETINDEX_FOOTER_GUEST %}checked="checked"{% endif %}/> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="walletindex_footer_guest" value="0" {% if not WALLETINDEX_FOOTER_GUEST %}checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="walletindex_respository">{{ lang('WALLETINDEX') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<b>{{ lang('WALLETINDEX') }} <span style="margin-left:73px;">{{ lang('WALLETINDEX_WALLET') }}</span><span style="margin-left:188px;">{{ lang('WALLETINDEX_TICKER') }}</span><span style="margin-left:43px;">{{ lang('WALLETINDEX_QR_SIZE') }}</span></b>
+				{% for walletindex in loops.walletindex %}
+				<p id="walletindex">
+					<input name="walletindex[]" type="text" value="{{ walletindex.WALLETINDEX }}" size="16" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER') }}">
+					<input name="walletindex_wallet[]" type="text" value="{{ walletindex.WALLETINDEX_WALLET }}" size="45" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER_NAME') }}">
+					<input name="walletindex_ticker[]" type="text" oninput="this.value=this.value.toLowerCase()" value="{{ walletindex.WALLETINDEX_TICKER }}" size="10" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER_TICKER') }}">
+					<input name="walletindex_qr_size[]" type="text" value="{{ walletindex.WALLETINDEX_QR_SIZE }}" size="10" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER_SIZE') }}">
+					<span class="wallet_acp_icon">
+						<img align="top" src="{{ walletindex.WALLETINDEX_IMAGEPATH }}/{{ walletindex.WALLETINDEX_TICKER }}.png" alt="" title="{{ walletindex.WALLETINDEX }}"/>
+					</span>
+				</p>
+				{% endfor %}
+				<dd>
+					<input value="{{ lang('WALLETINDEX_MORE_LINKS') }}" onclick="add_this('walletindex').value" type="button">
+				</dd>
+			</dd>
+		</dl>
+	</fieldset>
+	<p class="submit-buttons">
+		{{ S_FORM_TOKEN }}
+		<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
+	</p>
+</form>
+
+<script>
+function add_this(id)
+{
+	var tableRow = document.getElementById(id);
+	var tableRowClone = tableRow.cloneNode(true);
+	$('input', tableRowClone).val("");
+	tableRow.parentNode.appendChild(tableRowClone, tableRow.previousSibling);
+}
+</script>
+
+{% INCLUDE 'overall_footer.html' %}

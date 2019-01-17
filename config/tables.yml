@@ -1,0 +1,2 @@
+parameters:
+    tables.walletindex_table: %core.table_prefix%walletindex

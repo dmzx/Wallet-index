@@ -1,0 +1,43 @@
+{% INCLUDE 'overall_header.html' %}
+
+{% if WALLETINDEX_ENABLE and walletindex and (WALLETINDEX_ENABLE_GUEST and S_USER_LOGGED_IN) or not WALLETINDEX_ENABLE_GUEST %}
+<div class="main-wrapper content-container">
+	<div id="main-container" class="container donations-container">
+		<div class="row qr-codes">
+			<div class="col-sm-3 col-sm-offset-3">
+				{% for walletindex in loops.walletindex %}
+				<div class="panel bg2 col">
+					<div class="inner">
+						<p><img src="{{ walletindex.WALLETINDEX_IMAGEPATH }}/{{ walletindex.WALLETINDEX_TICKER }}.png" alt="" title="{{ walletindex.WALLETINDEX }}"/> <span class="crypto-control">{{ walletindex.WALLETINDEX }}</span></p>
+						<dt>
+							<input type="text" onClick="this.select();" class="form-control" readonly name="{{ walletindex.WALLETINDEX_TICKER }}" value="{{ walletindex.WALLETINDEX_WALLET }}">
+							<input type="button" value="{{ lang('WALLETINDEX_SHOWQR') }}" onclick="var {{ walletindex.WALLETINDEX_TICKER }} = $(this).parents('.main-wrapper').find('.{{ walletindex.WALLETINDEX_TICKER }}').toggle('slow'); if ( this.value == '{{ lang('WALLETINDEX_HIDEQR') }}' ) { this.value = '{{ lang('WALLETINDEX_SHOWQR') }}'; } else { this.value = '{{ lang('WALLETINDEX_HIDEQR') }}'; };">
+						</dt>
+						<div class="row text-center">
+							{{ walletindex.WALLETINDEX }} {{ lang('WALLETINDEX_TEXT') }}
+						</div>
+						<dd>
+							<div class="{{ walletindex.WALLETINDEX_TICKER }}" name="{{ walletindex.WALLETINDEX_TICKER }}" style="display: none;"><img src="https://chart.googleapis.com/chart?chs={{ walletindex.WALLETINDEX_QR_SIZE }}x{{ walletindex.WALLETINDEX_QR_SIZE }}&cht=qr&chl={{ walletindex.WALLETINDEX_WALLET }}"></div>
+						</dd>
+					</div>
+				</div>
+				<style type="text/css">
+					.{{ walletindex.WALLETINDEX_TICKER }}
+					{
+						 text-align: center;
+					}
+				</style>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+{% else %}
+<div class="rules">
+	<div class="inner">
+		<strong>{{ lang('WALLETINDEX_TITLE') ~ lang('COLON') }}</strong> {{ lang('WALLETINDEX_GUEST_CLOSED') }}
+	</div>
+</div>
+{% endif %}
+
+{% INCLUDE 'overall_footer.html' %}
