@@ -36,8 +36,9 @@ $lang = array_merge($lang, array(
 	'WALLETINDEX_SHOWQR'			=> 'Show QR',
 	'WALLETINDEX_HIDEQR'			=> 'Hide QR',
 	'WALLETINDEX_TITLE'				=> 'Wallet',
-	'WALLETINDEX_GUEST_CLOSED'		=> 'Closed for guests.',
+	'WALLETINDEX_GUEST_CLOSED'		=> 'Closed.',
 	'WALLETINDEX_VERSION'			=> 'Version',
 	'WALLETINDEX_TEXT'				=> 'Wallet Address for making a Donation.',
 	'WALLETINDEX_FOOTER'			=> 'We Currently Accept',
+	'WALLETINDEX_RECIEVED'			=> 'Total %1$s’s recieved: %2$s',
 ));

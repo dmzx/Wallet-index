@@ -10,7 +10,9 @@ services:
             - '@user'
             - '@dbal.conn'
             - '@request'
+            - '@config_text'
             - '%tables.walletindex_table%'
+            - '%tables.walletindex_currency_table%'
             - '@ext.manager'
             - '@path_helper'
     dmzx.walletindex.wallet.controller:
@@ -18,7 +20,14 @@ services:
         arguments:
             - '@template'
             - '@user'
+            - '@dbal.conn'
+            - '@config'
             - '@controller.helper'
+            - '@config_text'
+            - '%tables.walletindex_table%'
+            - '%tables.walletindex_currency_table%'
+            - '@ext.manager'
+            - '@path_helper'
     dmzx.walletindex.listener:
         class: dmzx\walletindex\event\listener
         arguments:
@@ -28,6 +37,7 @@ services:
             - '@config'
             - '@controller.helper'
             - '%tables.walletindex_table%'
+            - '%core.php_ext%'
             - '@ext.manager'
             - '@path_helper'
         tags:

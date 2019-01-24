@@ -1,11 +1,11 @@
 {% if WALLETINDEX_ENABLE and WALLETINDEX_ENABLE_FOOTER %}
 {% if (WALLETINDEX_FOOTER_GUEST and S_USER_LOGGED_IN) or not WALLETINDEX_FOOTER_GUEST %}
 <div class="wallet_footer-copyright">
-	{% if (WALLETINDEX_ENABLE_GUEST and S_USER_LOGGED_IN) or not WALLETINDEX_ENABLE_GUEST %}<a href="{U_WALLET}" title="{{ lang('WALLETINDEX_TITLE') }}">{{ lang('WALLETINDEX_FOOTER') }}</a>{% else %}{{ lang('WALLETINDEX_FOOTER') }}{% endif %}
+	{% if (WALLETINDEX_ENABLE_GUEST and S_USER_LOGGED_IN) or not WALLETINDEX_ENABLE_GUEST %}<a href="{{ U_WALLET }}" title="{{ WALLETINDEX_ICON_NAME }}">{{ lang('WALLETINDEX_FOOTER') }}</a>{% else %}{{ lang('WALLETINDEX_FOOTER') }}{% endif %}
 </div>
-{% for walletindex in loops.walletindex %}
+{% for walletindex_footer in loops.walletindex_footer %}
 <span class="wallet_footer">
-	<img src="{{ walletindex.WALLETINDEX_IMAGEPATH }}/{{ walletindex.WALLETINDEX_TICKER }}.png" alt="" title="{{ walletindex.WALLETINDEX }}"/>
+	<img src="{{ walletindex_footer.WALLETINDEX_IMAGEPATH }}/{{ walletindex_footer.WALLETINDEX_TICKER }}.png" alt="" title="{{ walletindex_footer.WALLETINDEX }}"/>
 </span>
 {% endfor %}
 <div>{{ WALLETINDEX_DISPLAY_NAME }}<span title="{{ lang('WALLETINDEX_VERSION') }}{{ lang('COLON') }} {{ WALLETINDEX_VERSION }}"> &copy;</span> {{ lang('POST_BY_AUTHOR') }} {{ WALLETINDEX_AUTHOR_HOMEPAGES }}</div>

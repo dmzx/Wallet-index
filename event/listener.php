@@ -38,6 +38,9 @@ class listener implements EventSubscriberInterface
 	/** @var string */
 	protected $walletindex_table;
 
+	/** @var string */
+	protected $php_ext;
+
 	/** @var manager */
 	protected $ext_manager;
 
@@ -53,6 +56,7 @@ class listener implements EventSubscriberInterface
 	* @param config				$config
 	* @param helper		 		$helper
 	* @param string				$walletindex_table
+	* @param string				$php_ext
 	* @param manager			$ext_manager
 	* @param path_helper		$path_helper
 	*/
@@ -63,6 +67,7 @@ class listener implements EventSubscriberInterface
 		config $config,
 		helper $helper,
 		$walletindex_table,
+		$php_ext,
 		manager $ext_manager,
 		path_helper $path_helper
 	)
@@ -73,6 +78,7 @@ class listener implements EventSubscriberInterface
 		$this->config 				= $config;
 		$this->helper 				= $helper;
 		$this->walletindex_table 	= $walletindex_table;
+		$this->php_ext				= $php_ext;
 		$this->ext_manager	 		= $ext_manager;
 		$this->path_helper	 		= $path_helper;
 		$this->ext_path 			= $this->ext_manager->get_extension_path('dmzx/walletindex', true);
@@ -82,8 +88,9 @@ class listener implements EventSubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return [
-			'core.user_setup'	=> 'load_language_on_setup',
-			'core.page_header' 	=> 'page_header',
+			'core.user_setup'						=> 'load_language_on_setup',
+			'core.page_header' 						=> 'page_header',
+			'core.viewonline_overwrite_location'	=> 'add_page_viewonline',
 		];
 	}
 
@@ -120,22 +127,38 @@ class listener implements EventSubscriberInterface
 			{
 				if (!empty($row['walletindex']))
 				{
-					$this->template->assign_block_vars('walletindex', array(
-						'WALLETINDEX'				=> $row['walletindex'],
-						'WALLETINDEX_WALLET'		=> $row['walletindex_wallet'],
-						'WALLETINDEX_TICKER'		=> $row['walletindex_ticker'],
-						'WALLETINDEX_QR_SIZE'		=> $row['walletindex_qr_size'],
-						'WALLETINDEX_IMAGEPATH'		=> $this->ext_path_web . 'images',
+					$this->template->assign_block_vars('walletindex_footer', array(
+						'WALLETINDEX'					=> $row['walletindex'],
+						'WALLETINDEX_TICKER'			=> $row['walletindex_ticker'],
+						'WALLETINDEX_IMAGEPATH'			=> $this->ext_path_web . 'images',
 					));
 				};
 			}
 			$this->assign_authors();
 		}
+		else
+		{
+			$this->template->assign_vars(array(
+				'WALLETINDEX_ENABLE'			=> false,
+				'WALLETINDEX_ENABLE_GUEST'		=> true,
+			));
+		}
 		$this->db->sql_freeresult($result);
 
 		$this->template->assign_vars(array(
-			'U_WALLET'	=> $this->helper->route('dmzx_wallet_controller'),
+			'U_WALLET'	 					=> $this->helper->route('dmzx_wallet_controller'),
+			'WALLETINDEX_ICON_NAME'			=> $this->config['walletindex_icon_name'],
+			'WALLETINDEX_ICON'				=> $this->config['walletindex_icon'],
 		));
+	}
+
+	public function add_page_viewonline($event)
+	{
+		if (strrpos($event['row']['session_page'], 'app.' . $this->php_ext . '/wallet') === 0)
+		{
+			$event['location'] = $this->config['walletindex_icon_name'];
+			$event['location_url'] = $this->helper->route('dmzx_wallet_controller');
+		}
 	}
 
 	protected function assign_authors()
@@ -150,7 +173,7 @@ class listener implements EventSubscriberInterface
 		}
 
 		$this->template->assign_vars(array(
-			'WALLETINDEX_DISPLAY_NAME'		=> $meta['extra']['display-name'],
+			'WALLETINDEX_DISPLAY_NAME'		=> $this->config['walletindex_icon_name'],
 			'WALLETINDEX_AUTHOR_HOMEPAGES'	=> implode(' &amp; ', $author_homepages),
 			'WALLETINDEX_VERSION'			=> $this->config['walletindex_version'],
 		));

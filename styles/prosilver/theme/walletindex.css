@@ -9,6 +9,16 @@
     overflow: hidden;
 }
 
+.walletprice {
+    float: right;
+    color: #4a86e8;
+    font-size: 18pt;
+    width: 169px;
+    text-align: center;
+	margin-top: 8px;
+	font-family: cursive;
+}
+
 .form-control {
     width: 350px;
     height: 24px;
@@ -57,7 +67,7 @@
 		margin-left: 2%;
 	}
 
-	.col-sm-3{
+	.col-sm-3 {
 		float: left;
 	}
 	
@@ -69,5 +79,4 @@
 	.main-wrapper {
 		border: none;
 	}
-
 }

@@ -15,6 +15,7 @@ use phpbb\log\log_interface;
 use phpbb\user;
 use phpbb\db\driver\driver_interface as db_interface;
 use phpbb\request\request_interface;
+use phpbb\config\db_text;
 use phpbb\extension\manager;
 use phpbb\path_helper;
 
@@ -38,8 +39,14 @@ class admin_controller
 	/** @var request_interface */
 	protected $request;
 
+	/** @var db_text */
+	protected $config_text;
+
 	/** @var string */
 	protected $walletindex_table;
+
+	/** @var string */
+	protected $walletindex_currency_table;
 
 	/** @var manager */
 	protected $ext_manager;
@@ -59,9 +66,11 @@ class admin_controller
 	 * @param user					$user
 	 * @param db_interface			$db
 	 * @param request_interface		$request
+	 * @param db_text				$config_text
 	 * @param string				$walletindex_table
+	 * @param string				$walletindex_currency_table
 	 * @param manager				$ext_manager
-	* @param path_helper			$path_helper
+	 * @param path_helper			$path_helper
 	 */
 	public function __construct(
 		config $config,
@@ -70,22 +79,26 @@ class admin_controller
 		user $user,
 		db_interface $db,
 		request_interface $request,
+		db_text $config_text,
 		$walletindex_table,
+		$walletindex_currency_table,
 		manager $ext_manager,
 		path_helper $path_helper
 	)
 	{
-		$this->config 				= $config;
-		$this->template 			= $template;
-		$this->log 					= $log;
-		$this->user 				= $user;
-		$this->db 					= $db;
-		$this->request 				= $request;
-		$this->walletindex_table 	= $walletindex_table;
-		$this->ext_manager	 		= $ext_manager;
-		$this->path_helper	 		= $path_helper;
-		$this->ext_path 			= $this->ext_manager->get_extension_path('dmzx/walletindex', true);
-		$this->ext_path_web 		= $this->path_helper->update_web_root_path($this->ext_path);
+		$this->config 						= $config;
+		$this->template 					= $template;
+		$this->log 							= $log;
+		$this->user 						= $user;
+		$this->db 							= $db;
+		$this->request 						= $request;
+		$this->config_text					= $config_text;
+		$this->walletindex_table 			= $walletindex_table;
+		$this->walletindex_currency_table 	= $walletindex_currency_table;
+		$this->ext_manager	 				= $ext_manager;
+		$this->path_helper	 				= $path_helper;
+		$this->ext_path 					= $this->ext_manager->get_extension_path('dmzx/walletindex', true);
+		$this->ext_path_web 				= $this->path_helper->update_web_root_path($this->ext_path);
 	}
 
 	public function display_options()
@@ -93,6 +106,10 @@ class admin_controller
 		add_form_key('acp_walletindex');
 
 		$this->user->add_lang_ext('dmzx/walletindex', 'acp_walletindex');
+
+		$data = $this->config_text->get_array(array(
+			'walletindex_terms',
+		));
 
 		$sql = 'SELECT *
 			FROM '. $this->walletindex_table;
@@ -125,6 +142,14 @@ class admin_controller
 			{
 				trigger_error('FORM_INVALID');
 			}
+
+			$data['walletindex_terms'] = $this->request->variable('walletindex_terms', '', true);
+
+			$this->config_text->set_array(array(
+				'walletindex_terms'			=> $data['walletindex_terms'],
+			));
+
+			$this->set_options();
 
 			$this->db->sql_query('TRUNCATE TABLE ' . $this->walletindex_table);
 
@@ -163,6 +188,8 @@ class admin_controller
 				'walletindex_enable_guest' 		=> $this->request->variable('walletindex_enable_guest', ''),
 				'walletindex_enable_footer' 	=> $this->request->variable('walletindex_enable_footer', ''),
 				'walletindex_footer_guest' 		=> $this->request->variable('walletindex_footer_guest', ''),
+				'walletindex_show_recieved' 	=> $this->request->variable('walletindex_show_recieved', ''),
+				'walletindex_value_crypto' 		=> $this->request->variable('walletindex_value_crypto', ''),
 			);
 
 			$this->db->sql_query('UPDATE ' . $this->walletindex_table . '
@@ -175,20 +202,48 @@ class admin_controller
 			trigger_error($this->user->lang('WALLETINDEX_SAVED') . adm_back_link($this->u_action));
 		}
 
-		$sql = 'SELECT walletindex_enable, walletindex_enable_guest, walletindex_enable_footer, walletindex_footer_guest
+		$sql = 'SELECT walletindex_enable, walletindex_enable_guest, walletindex_enable_footer, walletindex_footer_guest, walletindex_show_recieved, walletindex_value_crypto
 			FROM ' . $this->walletindex_table . "
 			WHERE walletindex_id =	1";
 		$result = $this->db->sql_query($sql);
 		$walletindex_data = $this->db->sql_fetchrow($result);
 
 		$this->template->assign_vars(array(
-			'U_ACTION'							=> $this->u_action,
 			'WALLETINDEX_ENABLE'				=> $walletindex_data['walletindex_enable'],
 			'WALLETINDEX_ENABLE_GUEST'			=> $walletindex_data['walletindex_enable_guest'],
 			'WALLETINDEX_ENABLE_FOOTER'			=> $walletindex_data['walletindex_enable_footer'],
 			'WALLETINDEX_FOOTER_GUEST'			=> $walletindex_data['walletindex_footer_guest'],
+			'WALLETINDEX_SHOW_RECIEVED'			=> $walletindex_data['walletindex_show_recieved'],
+			'WALLETINDEX_VALUE_CRYPTO'			=> $walletindex_data['walletindex_value_crypto'],
 			'WALLETINDEX_VERSION'				=> $this->config['walletindex_version'],
+			'WALLETINDEX_ICON_NAME'				=> $this->config['walletindex_icon_name'],
+			'WALLETINDEX_ICON'					=> $this->config['walletindex_icon'],
+			'WALLETINDEX_TERMS'					=> $data['walletindex_terms'],
+			'U_ACTION'							=> $this->u_action,
 		));
+		$this->db->sql_freeresult($result);
+
+		$sql = 'SELECT *
+			FROM ' . $this->walletindex_currency_table;
+		$result = $this->db->sql_query($sql);
+		while ($currency_item = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('options', array(
+				'CURRENCY_ID'		=> (int) $currency_item['currency_id'],
+				'CURRENCY_ISO_CODE'	=> $currency_item['currency_iso_code'],
+				'CURRENCY_NAME'		=> $currency_item['currency_name'],
+				'CURRENCY_SYMBOL'	=> $currency_item['currency_symbol'],
+				'S_CURRENCY_DEFAULT' => $this->config['walletindex_default_currency'] == $currency_item['currency_id'],
+			));
+		}
+		$this->db->sql_freeresult($result);
+	}
+
+	protected function set_options()
+	{
+		$this->config->set('walletindex_icon_name', $this->request->variable('walletindex_icon_name', '', true));
+		$this->config->set('walletindex_icon', $this->request->variable('walletindex_icon', '', true));
+		$this->config->set('walletindex_default_currency', $this->request->variable('walletindex_default_currency', 0));
 	}
 
 	public function set_page_url($u_action)

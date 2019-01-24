@@ -1,5 +1,7 @@
-{% INCLUDECSS 'acp_walletindex.css' %}
 {% INCLUDE 'overall_header.html' %}
+
+{% INCLUDECSS '@dmzx_walletindex/css/acp_walletindex.css' %}
+{% INCLUDECSS '@dmzx_walletindex/css/fontawesome-iconpicker.css' %}
 
 <h1>{{ lang('ACP_WALLETINDEX_TITLE') }}</h1>
 
@@ -18,6 +20,20 @@
 				<label><input type="radio" class="radio" name="walletindex_enable" value="0" {% if not WALLETINDEX_ENABLE %}checked="checked"{% endif %} /> {{ lang('NO') }}</label>
 			</dd>
 		</dl>
+		<dl>
+			<dt><label>{{ lang('WALLETINDEX_ICON_NAME') }}{{ lang('COLON') }}</label><br />{{ lang('WALLETINDEX_ICON_NAME_EXPLAIN') }}</dt>
+			<dd><input name="walletindex_icon_name" type="text" id="walletindex_icon_name" size="30" maxlength="30" placeholder="{{ lang('WALLETINDEX_ICON_NAME_PLACEHOLDER') }}" value="{{ WALLETINDEX_ICON_NAME }}" /></dd>
+		</dl>
+		{% macro option(name, value1) %}
+		{% set lang = lang(name|upper) eq name|upper ? lang('WALLETINDEX_' ~ name|upper) : lang(name|upper) %}
+		{% set lang_explain = lang(name|upper) eq name|upper ? lang('WALLETINDEX_' ~ name|upper ~ '_EXPLAIN') : lang(name|upper) %}
+		<dl>
+			<dt><label>{{ lang }}{{ lang('COLON') }}</label><br />{{ lang_explain }}</dt>
+			<dd><input type="text" name="walletindex_{{ name }}" class="walletindex-icon" value="{{ value1 }}" placeholder="{{ lang('WALLETINDEX_ICON_PLACEHOLDER') }}" required> <i class="icon {{ value1 }} fa-fw" aria-hidden="true"></i> {{ value1 }}</dd>
+		</dl>
+		{% endmacro %}
+		{% import _self as wallet %}
+		{{ wallet.option('icon', WALLETINDEX_ICON) }}
 		<dl>
 			<dt>
 				<label for="walletindex_enable_guest">{{ lang('WALLETINDEX_ENABLE_GUEST') }}{{ lang('COLON') }}</label><br />
@@ -50,6 +66,39 @@
 		</dl>
 		<dl>
 			<dt>
+				<label for="walletindex_value_crypto">{{ lang('WALLETINDEX_VALUE_CRYPTO') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_VALUE_CRYPTO_EXPLAIN') }}</span></dt>
+			</dt>
+			<dd>
+				<label><input type="radio" class="radio" id="walletindex_value_crypto" name="walletindex_value_crypto" value="1" {% if WALLETINDEX_VALUE_CRYPTO %}checked="checked"{% endif %}/> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="walletindex_value_crypto" value="0" {% if not WALLETINDEX_VALUE_CRYPTO %}checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="walletindex_default_currency">{{ lang('WALLETINDEX_DEFAULT_CURRENCY') }}{{ lang('COLON') }}</label><br>
+				<span>{{ lang('WALLETINDEX_DEFAULT_CURRENCY_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<select name="walletindex_default_currency" id="walletindex_default_currency">
+					{% for options in loops.options %}
+					<option value="{{ options.CURRENCY_ID }}"{% if options.S_CURRENCY_DEFAULT %} selected="selected"{% endif %}>{{ options.CURRENCY_SYMBOL }} {{ options.CURRENCY_ISO_CODE }} &bull; {{ options.CURRENCY_NAME }}</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="walletindex_show_recieved">{{ lang('WALLETINDEX_SHOW_RECIEVED') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_SHOW_RECIEVED_EXPLAIN') }}</span></dt>
+			</dt>
+			<dd>
+				<label><input type="radio" class="radio" id="walletindex_show_recieved" name="walletindex_show_recieved" value="1" {% if WALLETINDEX_SHOW_RECIEVED %}checked="checked"{% endif %}/> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="walletindex_show_recieved" value="0" {% if not WALLETINDEX_SHOW_RECIEVED %}checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
 				<label for="walletindex_respository">{{ lang('WALLETINDEX') }}{{ lang('COLON') }}</label><br />
 				<span>{{ lang('WALLETINDEX_EXPLAIN') }}</span>
 			</dt>
@@ -58,7 +107,7 @@
 				{% for walletindex in loops.walletindex %}
 				<p id="walletindex">
 					<input name="walletindex[]" type="text" value="{{ walletindex.WALLETINDEX }}" size="16" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER') }}">
-					<input name="walletindex_wallet[]" type="text" value="{{ walletindex.WALLETINDEX_WALLET }}" size="45" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER_NAME') }}">
+					<input name="walletindex_wallet[]" type="text" value="{{ walletindex.WALLETINDEX_WALLET }}" size="45" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER_WALLET') }}">
 					<input name="walletindex_ticker[]" type="text" oninput="this.value=this.value.toLowerCase()" value="{{ walletindex.WALLETINDEX_TICKER }}" size="10" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER_TICKER') }}">
 					<input name="walletindex_qr_size[]" type="text" value="{{ walletindex.WALLETINDEX_QR_SIZE }}" size="10" placeholder="{{ lang('WALLETINDEX_PLACEHOLDER_SIZE') }}">
 					<span class="wallet_acp_icon">
@@ -71,6 +120,14 @@
 				</dd>
 			</dd>
 		</dl>
+	</fieldset>
+	<fieldset>
+		<legend><i class="icon fa-exclamation" aria-hidden="true"></i> {{ lang('WALLETINDEX_TERMS_BODY') }}</legend>
+			<dl>
+				<dt><label for="walletindex_terms">{{ lang('WALLETINDEX_TERMS') }}{{ lang('COLON') }}</label><br />
+				<span>{{ lang('WALLETINDEX_TERMS_EXPLAIN') }}</span></dt>
+				<dd><textarea id="walletindex_terms" name="walletindex_terms" rows="8" cols="45">{{ WALLETINDEX_TERMS }}</textarea></dd>
+			</dl>
 	</fieldset>
 	<p class="submit-buttons">
 		{{ S_FORM_TOKEN }}
@@ -88,5 +145,8 @@ function add_this(id)
 	tableRow.parentNode.appendChild(tableRowClone, tableRow.previousSibling);
 }
 </script>
+
+{% INCLUDEJS '@dmzx_walletindex/js/fontawesome-iconpicker.js' %}
+{% INCLUDEJS '@dmzx_walletindex/js/acp_walletindex_iconpicker.js' %}
 
 {% INCLUDE 'overall_footer.html' %}
