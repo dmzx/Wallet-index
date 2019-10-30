@@ -3,14 +3,14 @@
 	"type": "phpbb-extension",
 	"description": "Adds Wallet index page to your forum.",
 	"homepage": "https://www.dmzx-web.net",
-	"version": "1.0.1",
-	"time": "2019-01-21",
+	"version": "1.0.2",
+	"time": "2019-10-30",
 	"keywords": [
 		"phpbb",
 		"extension",
 		"walletindex"
 	],
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-only",
 	"authors": [
 		{
 			"name": "dmzx",

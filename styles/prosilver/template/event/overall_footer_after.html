@@ -1,0 +1,15 @@
+{% INCLUDEJS '@dmzx_walletindex/js/walletindex.js' %}
+
+<script>
+var walletIndex = {
+	lang: {
+		walletindexQRtext				: '{{ lang('WALLETINDEX_QR_TEXT') | escape('js') }}',
+		walletindexQRclose				: '{{ lang('WALLETINDEX_QR_CLOSE') | escape('js') }}'
+	}
+};
+</script>
+
+{% if not definition.INCLUDED_SWEETALERT2ALLMINJS %}
+	{% INCLUDEJS '@dmzx_walletindex/js/sweetalert2.all.min.js' %}
+	{% DEFINE INCLUDED_SWEETALERT2ALLMINJS = true %}
+{% endif %}

@@ -11,17 +11,17 @@
 						<p><img src="{{ walletindex.WALLETINDEX_IMAGEPATH }}/{{ walletindex.WALLETINDEX_TICKER }}.png" alt="" title="{{ walletindex.WALLETINDEX }}"/> <span class="crypto-control">{{ walletindex.WALLETINDEX }} {% if WALLETINDEX_VALUE_CRYPTO %}<span class="walletprice">{{ WALLETINDEX_CURRENCY_SYMBOL }} {{ walletindex.WALLETINDEX_VALUE }}</span> {% endif %}</span></p>
 						<dt>
 							<input type="text" onClick="this.select();" class="form-control" readonly name="{{ walletindex.WALLETINDEX_TICKER }}" value="{{ walletindex.WALLETINDEX_WALLET }}">
-							<input type="button" value="{{ lang('WALLETINDEX_SHOWQR') }}" onclick="var {{ walletindex.WALLETINDEX_TICKER }} = $(this).parents('.main-wrapper').find('.{{ walletindex.WALLETINDEX_TICKER }}').toggle('slow'); if ( this.value == '{{ lang('WALLETINDEX_HIDEQR') }}' ) { this.value = '{{ lang('WALLETINDEX_SHOWQR') }}'; } else { this.value = '{{ lang('WALLETINDEX_HIDEQR') }}'; };">
+							<button class="button" onclick="openQR(this);">{{ lang('WALLETINDEX_SHOWQR') }}
+								<img src="https://chart.googleapis.com/chart?chs={{ walletindex.WALLETINDEX_QR_SIZE }}x{{ walletindex.WALLETINDEX_QR_SIZE }}&cht=qr&chl={{ walletindex.WALLETINDEX_WALLET }}" title="{{ walletindex.WALLETINDEX }}" style="display: none;"/>
+							</button>
 						</dt>
 						<div class="row text-center">
 							{{ walletindex.WALLETINDEX }} {{ lang('WALLETINDEX_TEXT') }}{% if walletindex.S_WALLETINDEX_RECIEVED and WALLETINDEX_SHOW_RECIEVED %}</br>
 								{{ walletindex.WALLETINDEX_WALLET_RECIEVED }}{% endif %}
 						</div>
-						<dd>
-							<div class="{{ walletindex.WALLETINDEX_TICKER }}" name="{{ walletindex.WALLETINDEX_TICKER }}" style="display: none;"><img src="https://chart.googleapis.com/chart?chs={{ walletindex.WALLETINDEX_QR_SIZE }}x{{ walletindex.WALLETINDEX_QR_SIZE }}&cht=qr&chl={{ walletindex.WALLETINDEX_WALLET }}"></div>
-						</dd>
 					</div>
 				</div>
+
 				<style type="text/css">
 				.{{ walletindex.WALLETINDEX_TICKER }}
 				{
